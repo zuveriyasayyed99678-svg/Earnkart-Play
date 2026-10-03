@@ -2,175 +2,70 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>EarnKart PLAY</title>
-<meta name="theme-color" content="#ff6b9d">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EarnKart PLAY - 6 Games in 1</title>
+<meta name="theme-color" content="#ff3d57">
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>window.OneSignalDeferred=window.OneSignalDeferred||[];OneSignalDeferred.push(async function(OneSignal){await OneSignal.init({appId:"d869505a-3774-417f-99b0-1a5cf702d8d3"});});</script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>window.OneSignalDeferred=window.OneSignalDeferred||[]; OneSignalDeferred.push(async function(OneSignal){ await OneSignal.init({appId: "YOUR-ONESIGNAL-APP-ID"}); });</script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:#f4f4f9;min-height:100vh;display:flex;flex-direction:column}
-#splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#ff6b9d,#7c4dff,#4fc3f7);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff}
-#app{display:none;flex-direction:column;min-height:100vh;background:linear-gradient(180deg,#fff0f5,#e1f5fe)}
-header{background:linear-gradient(135deg,#ff6b9d,#7c4dff);color:#fff;padding:14px 16px 18px;border-radius:0 0 24px 24px;position:sticky;top:0;z-index:50}
-.games-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:12px}
-.game-card{background:#fff;border-radius:20px;padding:12px;cursor:pointer;box-shadow:0 6px 20px rgba(124,77,255,.1);position:relative}
-.game-card:active{transform:scale(0.96)}
-.game-thumb{height:100px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:8px;background:linear-gradient(135deg,#ffecd2,#fcb69f)}
-.badge-new{position:absolute;top:6px;left:6px;background:#ff4757;color:#fff;font-size:8px;font-weight:900;padding:3px 7px;border-radius:8px}
-#gameView{display:none;position:fixed;inset:0;background:#fff;z-index:1000;flex-direction:column}
-.gHeader{background:#1a1a2e;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
-#gFrame{flex:1;width:100%;border:none}
-.ad-box{background:#fff;border-radius:12px;margin:10px 12px;min-height:60px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:8px 0;border-radius:20px 20px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.08);z-index:90}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;color:#999;font-size:9px;font-weight:800}
-.nav-btn.active{color:#ff6b9d}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1100;padding:20px}
-.modal-overlay.show{display:flex}
-.modal-card{background:#2d1b4e;border-radius:20px;padding:20px;width:100%;max-width:340px;border:2px solid #ff6b9d;color:#fff}
-.toast{position:fixed;bottom:160px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff6b9d,#7c4dff);color:#fff;padding:10px 18px;border-radius:12px;font-weight:800;z-index:2000;opacity:0;transition:.3s;pointer-events:none}
-.toast.show{opacity:1}
+*{margin:0;padding:0;box-sizing:border-box;font-family: 'Segoe UI', sans-serif}
+body{background:#f4f4f9;min-height:100vh;padding-bottom:80px}
+#splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#ff3d57,#ff8a5b);display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;transition:0.5s}
+#splash h1{font-size:32px;animation:pop 1s infinite alternate}
+@keyframes pop{to{transform:scale(1.1)}}
+.header{background:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,0.08);position:sticky;top:0;z-index:100}
+.logo{font-weight:900;font-size:22px;color:#ff3d57}
+.coins{background:#fff0f2;border:1px solid #ff3d57;color:#ff3d57;padding:6px 14px;border-radius:20px;font-weight:700}
+.ad-top{background:#fff;border:2px dashed #ff8a5b;margin:12px;padding:12px;text-align:center;border-radius:12px;color:#ff8a5b;font-size:13px}
+.games{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.08);cursor:pointer;transition:0.2s}
+.card:active{transform:scale(0.97)}
+.card-img{height:110px;display:flex;align-items:center;justify-content:center;font-size:48px}
+.card h3{padding:8px 10px 2px;font-size:15px}
+.card p{padding:0 10px 10px;font-size:11px;color:#888}
+.play-btn{margin:0 10px 10px;background:#ff3d57;color:white;border:none;width:calc(100% - 20px);padding:8px;border-radius:8px;font-weight:700}
+.modal{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.85);display:none;flex-direction:column}
+.modal.active{display:flex}
+.modal-top{background:white;padding:10px;display:flex;justify-content:space-between;align-items:center}
+.modal-top button{background:#ff3d57;color:white;border:none;padding:6px 14px;border-radius:6px}
+#gameArea{flex:1;background:#111;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+canvas{background:white;border-radius:12px;max-width:95vw;max-height:70vh}
+.ad-bottom{position:fixed;bottom:0;left:0;right:0;background:white;border-top:2px solid #eee;padding:8px;text-align:center;font-size:12px;color:#888;z-index:200}
 </style>
 </head>
 <body>
-
-<div id="splash"><div style="font-size:56px">🎮</div><h1 style="font-size:38px;font-weight:900;margin-top:8px">EarnKart PLAY</h1><p style="letter-spacing:4px;margin-top:8px;font-weight:800">PLAY YOUR WORLD ✨</p></div>
-
-<div id="app">
-<header>
-<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:11px;opacity:.9">WELCOME BACK 👋</div><div style="font-weight:900;font-size:17px" id="userName">Player</div></div><div style="display:flex;gap:6px"><button onclick="openSettings()" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff">⚙️</button><button onclick="openLeaderboard()" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff">🏆</button></div></div>
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px"><div style="background:rgba(255,255,255,.18);border-radius:12px;padding:6px;text-align:center;border:1px solid rgba(255,255,255,.3)"><b id="statScore">0</b><br><span style="font-size:9px">SCORE</span></div><div style="background:rgba(255,255,255,.18);border-radius:12px;padding:6px;text-align:center;border:1px solid rgba(255,255,255,.3)"><b id="statPlayed">0</b><br><span style="font-size:9px">PLAYED</span></div><div style="background:rgba(255,255,255,.18);border-radius:12px;padding:6px;text-align:center;border:1px solid rgba(255,255,255,.3)"><b id="statCoins">0</b><br><span style="font-size:9px">COINS</span></div></div>
-</header>
-
-<main style="flex:1;padding-bottom:180px">
-<div class="ad-box" id="adTop"></div>
-<div style="font-weight:800;color:#7c4dff;margin:10px 16px">🎮 Popular Games - 6 Games Inside!</div>
-<div class="games-grid" id="gamesGrid"></div>
-</main>
-
-<div class="ad-box" style="position:fixed;bottom:70px;left:0;right:0;margin:0;border-radius:0;z-index:89" id="adBottom"></div>
-
-<div class="bottom-nav">
-<div class="nav-btn active" onclick="window.scrollTo({top:0,behavior:'smooth'})"><div style="font-size:18px">🏠</div>HOME</div>
-<div class="nav-btn" onclick="document.getElementById('gamesGrid').scrollIntoView({behavior:'smooth'})"><div style="font-size:18px">🎮</div>GAMES</div>
-<div class="nav-btn" onclick="openLeaderboard()"><div style="font-size:18px">🏆</div>RANKS</div>
-<div class="nav-btn" onclick="openSettings()"><div style="font-size:18px">⚙️</div>SETTINGS</div>
+<div id="splash"><h1>🎮 EarnKart PLAY</h1><p>Loading 6 Premium Games...</p></div>
+<div class="header"><div class="logo">EarnKart PLAY</div><div class="coins">🪙 <span id="coinCount">0</span></div></div>
+<div class="ad-top">📢 AdSense Top Banner - Your Ad ID: ca-pub-XXXXXXXXXXXXXXXX<br>Play & Earn Coins!</div>
+<div class="games">
+  <div class="card" onclick="openGame('bubble')"><div class="card-img" style="background:#e0f7ff">🫧</div><h3>Bubble Shooter</h3><p>Pop bubbles & earn</p><button class="play-btn">PLAY</button></div>
+  <div class="card" onclick="openGame('panda')"><div class="card-img" style="background:#e8ffe8">🐼</div><h3>Panda Run</h3><p>Jump & collect</p><button class="play-btn">PLAY</button></div>
+  <div class="card" onclick="openGame('word')"><div class="card-img" style="background:#fff3e0">🔤</div><h3>Word Master</h3><p>Guess the word</p><button class="play-btn">PLAY</button></div>
+  <div class="card" onclick="openGame('ball')"><div class="card-img" style="background:#ffe8f0">⚽</div><h3>Ball Bounce</h3><p>Keep ball up</p><button class="play-btn">PLAY</button></div>
+  <div class="card" onclick="openGame('bus')"><div class="card-img" style="background:#e8e8ff">🚌</div><h3>Bus Parking</h3><p>Park perfectly</p><button class="play-btn">PLAY</button></div>
+  <div class="card" onclick="openGame('restaurant')"><div class="card-img" style="background:#fffbe0">🍔</div><h3>Restaurant Rush</h3><p>Serve customers</p><button class="play-btn">PLAY</button></div>
 </div>
+<div class="ad-bottom">📢 AdSense Bottom - ca-pub-XXXXXXXXXXXXXXXX | Rewarded Ad on Game Over</div>
+<div id="gameModal" class="modal">
+  <div class="modal-top"><span id="gameTitle">Game</span><div><span id="scoreDisplay">Score: 0</span> <button onclick="closeGame()">✕ Close</button></div></div>
+  <div id="gameArea"></div>
 </div>
-
-<div id="gameView"><div class="gHeader"><button onclick="closeGame()" style="background:linear-gradient(135deg,#ff6b9d,#7c4dff);border:none;color:#fff;padding:8px 16px;border-radius:10px;font-weight:800">← Back</button><div id="gameTitle">Game</div><div style="width:70px"></div></div><iframe id="gFrame" allowfullscreen></iframe></div>
-
-<div class="modal-overlay" id="settingsModal"><div class="modal-card"><h3 style="text-align:center">⚙️ Settings</h3><input id="nameInput" placeholder="Your name" style="width:100%;padding:10px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;margin:12px 0"><button onclick="saveSettings()" style="width:100%;padding:12px;border-radius:10px;background:linear-gradient(135deg,#ff6b9d,#7c4dff);border:none;color:#fff;font-weight:800">SAVE</button><button onclick="closeModal('settingsModal')" style="width:100%;padding:10px;margin-top:8px;background:transparent;border:1px solid #555;color:#aaa;border-radius:10px">CLOSE</button></div></div>
-<div class="modal-overlay" id="leaderboardModal"><div class="modal-card"><h3 style="text-align:center">🏆 Leaderboard</h3><div id="lbList" style="padding:20px;text-align:center;color:#aaa">No scores yet!</div><button onclick="closeModal('leaderboardModal')" style="width:100%;padding:10px;background:transparent;border:1px solid #555;color:#aaa;border-radius:10px">CLOSE</button></div></div>
-<div class="toast" id="toast"></div>
-
 <script>
-// FIREBASE
-var firebaseConfig={apiKey:"AIzaSyD60hP5qIP6pjMeuIcZubtiGVPniiabn20",authDomain:"earn-kart-87457.firebaseapp.com",projectId:"earn-kart-87457",storageBucket:"earn-kart-87457.firebasestorage.app",messagingSenderId:"970795456496",appId:"1:970795456496:web:784fec52dbcb96ebcc6f35"};
-var db=null;try{firebase.initializeApp(firebaseConfig);db=firebase.database();}catch(e){}
-
-// 6 GAMES - EMBEDDED INSIDE - NO FOLDER NEEDED!
-var EMBEDDED_GAMES={
-bubble:`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0}body{height:100vh;background:linear-gradient(#87e5ff,#2a9fd6);overflow:hidden;font-family:system-ui}#score{position:fixed;top:0;left:0;right:0;background:linear-gradient(90deg,#ff6b9d,#7c4dff);color:#fff;padding:8px 12px;display:flex;justify-content:space-between;font-weight:900;z-index:10}#field{position:relative;width:100%;height:100%}.bubble{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,rgba(100,200,255,.6));border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;animation:float 5s linear forwards}@keyframes float{to{transform:translateY(-110vh)}}</style></head><body><div id="score"><span>🫧 Bubble Pop</span><span id="sc">0</span></div><div id="field"></div><script>let s=0;function spawn(){let b=document.createElement('div');b.className='bubble';let sz=50+Math.random()*40;b.style.width=sz+'px';b.style.height=sz+'px';b.style.left=Math.random()*85+'%';b.style.bottom='-60px';b.textContent=['⭐','💙','🫧'][Math.floor(Math.random()*3)];b.onclick=()=>{s+=10;document.getElementById('sc').innerText=s;parent.postMessage({type:'EARNKART_GAME_SCORE',score:10,game:'Ocean Bubble'},'*');b.remove()};document.getElementById('field').appendChild(b);setTimeout(()=>b.remove(),5000)}setInterval(spawn,650);<\/script></body></html>`,
-
-restaurant:`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0}body{height:100vh;background:#1a0f2e;display:flex;flex-direction:column;font-family:system-ui}.hud{background:linear-gradient(90deg,#ff6b9d,#7c4dff);color:#fff;padding:8px 12px;display:flex;justify-content:space-between;font-weight:900}.scene{flex:1;position:relative;background:linear-gradient(#2d1b4e,#1a0f2e);display:flex;align-items:center;justify-content:center}.chef{font-size:64px;animation:bounce 2s infinite}@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}.tray{position:absolute;bottom:0;left:0;right:0;background:#2a1a45;padding:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.food{background:#3d2a5e;border-radius:10px;padding:10px;text-align:center;cursor:pointer;border:2px solid #4a2c6e}.food:active{background:#ff6b9d}</style></head><body><div class="hud"><span>🍔 Restaurant Tycoon</span><span id="coins">0 Coins</span></div><div class="scene"><div class="chef">👨‍🍳</div><div style="position:absolute;top:30%;color:#ffd700;font-weight:900;letter-spacing:2px">★ EARNKART RESTAURANT ★</div><div style="position:absolute;top:45%;background:#fff;padding:8px 16px;border-radius:20px;border:2px solid #ff6b9d"><span style="font-size:22px">🍔</span> <b style="font-size:10px;color:#4a148c">BURGER</b></div><div class="tray"><div class="food" onclick="serve()">🍔<br><small>Burger</small></div><div class="food" onclick="serve()">🍕<br><small>Pizza</small></div><div class="food" onclick="serve()">🍟<br><small>Fries</small></div><div class="food" onclick="serve()">🌮<br><small>Taco</small></div></div></div><script>let c=0;function serve(){c+=10;document.getElementById('coins').innerText=c+' Coins';parent.postMessage({type:'EARNKART_GAME_SCORE',score:10,game:'Restaurant Tycoon'},'*');}<\/script></body></html>`,
-
-bus:`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0}body{height:100vh;background:#B8E6F5;display:flex;flex-direction:column;font-family:system-ui}.hud{background:#ff6b9d;color:#fff;padding:10px;text-align:center;font-weight:900}.yard{flex:1;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;padding:20px}.bus{width:80px;height:50px;background:linear-gradient(135deg,#ffd700,#ffb300);border-radius:10px 10px 5px 5px;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;border:3px solid #333;transition:.2s}.bus:active{transform:scale(0.9)}</style></head><body><div class="hud">🚌 Bus Jam - Tap buses to park!</div><div class="yard" id="yard"></div><script>const colors=['🚌','🚐','🚎'];const yard=document.getElementById('yard');for(let i=0;i<8;i++){let b=document.createElement('div');b.className='bus';b.textContent=colors[Math.floor(Math.random()*3)];b.onclick=()=>{b.style.transform='translateX(200px)';setTimeout(()=>b.remove(),300);parent.postMessage({type:'EARNKART_GAME_SCORE',score:15,game:'Bus Jam'},'*')};yard.appendChild(b);}<\/script></body></html>`,
-
-ball:`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0}body{height:100vh;background:#E1F5FE;display:flex;flex-direction:column;font-family:system-ui}.hud{background:#7c4dff;color:#fff;padding:10px;text-align:center;font-weight:900}.tubes{display:flex;justify-content:center;gap:10px;padding:20px;flex-wrap:wrap}.tube{width:60px;height:180px;background:rgba(255,255,255,.6);border:3px solid #7c4dff;border-radius:0 0 20px 20px;display:flex;flex-direction:column-reverse;padding:5px;gap:3px}.ball{width:100%;height:30px;border-radius:50%;cursor:pointer}</style></head><body><div class="hud">⚽ Ball Sort - Tap to sort colors</div><div class="tubes" id="tubes"></div><script>const colors=['#ff6b9d','#7c4dff','#4fc3f7','#66bb6a'];const tubes=document.getElementById('tubes');for(let i=0;i<4;i++){let t=document.createElement('div');t.className='tube';for(let j=0;j<4;j++){let b=document.createElement('div');b.className='ball';b.style.background=colors[Math.floor(Math.random()*4)];b.onclick=()=>{parent.postMessage({type:'EARNKART_GAME_SCORE',score:5,game:'Ball Sort'},'*');b.style.transform='scale(0)';setTimeout(()=>b.remove(),200)};t.appendChild(b);}tubes.appendChild(t);}<\/script></body></html>`,
-
-words:`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0}body{height:100vh;background:linear-gradient(135deg,#87CEEB,#4fc3f7);display:flex;align-items:center;justify-content:center;font-family:system-ui}.card{background:#fff;border-radius:20px;padding:20px;width:90%;max-width:320px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2)}.letters{display:flex;justify-content:center;gap:8px;margin:15px 0}.letter{width:45px;height:45px;background:linear-gradient(135deg,#ff6b9d,#7c4dff);color:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;cursor:pointer}.letter:active{transform:scale(0.9)}</style></head><body><div class="card"><h2>🔤 Word Connect</h2><p style="font-size:12px;color:#666;margin:8px 0">Tap letters to form word: CAT</p><div class="letters" id="letters"></div><div id="word" style="font-weight:900;letter-spacing:3px;min-height:24px"></div><button onclick="check()" style="margin-top:12px;padding:8px 18px;background:linear-gradient(135deg,#ff6b9d,#7c4dff);border:none;color:#fff;border-radius:8px;font-weight:800">CHECK</button></div><script>let w='';const letters=['C','A','T','S','O','N'];const cont=document.getElementById('letters');letters.forEach(l=>{let d=document.createElement('div');d.className='letter';d.textContent=l;d.onclick=()=>{w+=l;document.getElementById('word').innerText=w};cont.appendChild(d);});function check(){if(w==='CAT'){alert('Correct! +20 coins');parent.postMessage({type:'EARNKART_GAME_SCORE',score:20,game:'Word Connect'},'*');w='';document.getElementById('word').innerText='';}else{alert('Try again');w='';document.getElementById('word').innerText='';}}<\/script></body></html>`,
-
-panda:`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0}body{height:100vh;background:linear-gradient(135deg,#a1c4fd,#c2e9fb);display:flex;align-items:center;justify-content:center;font-family:system-ui}.card{background:#fff;border-radius:20px;padding:20px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2)}.grid{display:grid;grid-template-columns:repeat(3,60px);gap:8px;margin:15px 0}.cell{width:60px;height:60px;background:#e0e7ff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer}.cell:active{transform:scale(0.9)}</style></head><body><div class="card"><h2>🐼 Panda Puzzle</h2><p style="font-size:11px;color:#666">Find pandas!</p><div class="grid" id="grid"></div><div id="msg">Score: <span id="sc">0</span></div></div><script>let s=0;const icons=['🐼','🐻','🐨','🐼','🦊','🐼','🐻','🐼','🐨'];const grid=document.getElementById('grid');icons.forEach(ic=>{let d=document.createElement('div');d.className='cell';d.textContent='❓';d.onclick=()=>{d.textContent=ic;if(ic==='🐼'){s+=10;document.getElementById('sc').innerText=s;parent.postMessage({type:'EARNKART_GAME_SCORE',score:10,game:'Panda Puzzle'},'*');}};grid.appendChild(d);});<\/script></body></html>`
-};
-
-var games=[
-{id:'bubble',name:'Ocean Bubble',icon:'🫧',url:'bubble'},
-{id:'restaurant',name:'Restaurant Tycoon',icon:'🍔',url:'restaurant'},
-{id:'bus',name:'Bus Jam',icon:'🚌',url:'bus'},
-{id:'ball',name:'Ball Sort',icon:'⚽',url:'ball'},
-{id:'words',name:'Word Connect',icon:'🔤',url:'words'},
-{id:'panda',name:'Panda Puzzle',icon:'🐼',url:'panda'}
-];
-
-var user=localStorage.getItem('earnkart_username')||'Player';
-var totalScore=parseInt(localStorage.getItem('earnkart_total_score'))||0;
-var totalPlayed=parseInt(localStorage.getItem('earnkart_total_played'))||0;
-var totalCoins=parseInt(localStorage.getItem('earnkart_coins'))||0;
-var gameScores={};try{gameScores=JSON.parse(localStorage.getItem('earnkart_game_scores'))||{}}catch(e){}
-
-function init(){
-document.getElementById('userName').innerText=user;
-document.getElementById('statScore').innerText=totalScore;
-document.getElementById('statPlayed').innerText=totalPlayed;
-document.getElementById('statCoins').innerText=totalCoins;
-render();
-loadAds();
-}
-
-function render(){
-var g=document.getElementById('gamesGrid');
-g.innerHTML=games.map(x=>`<div class="game-card" onclick="openGame('${x.id}')"><div class="badge-new">NEW</div><div class="game-thumb">${x.icon}</div><div style="font-weight:800;font-size:12px;text-align:center">${x.name}</div><div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px"><span style="color:#999">0 plays</span><span style="background:linear-gradient(135deg,#ff6b9d,#7c4dff);color:#fff;padding:2px 8px;border-radius:10px;font-weight:800">${gameScores[x.id]||0} pts</span></div></div>`).join('');
-}
-
-function openGame(id){
-var game=games.find(x=>x.id===id);
-document.getElementById('gameTitle').innerText=game.name;
-document.getElementById('gFrame').srcdoc=EMBEDDED_GAMES[id];
-document.getElementById('gameView').style.display='flex';
-totalPlayed++;localStorage.setItem('earnkart_total_played',totalPlayed);
-document.getElementById('statPlayed').innerText=totalPlayed;
-render();
-}
-
-function closeGame(){document.getElementById('gFrame').srcdoc='';document.getElementById('gameView').style.display='none';}
-
-function loadAds(){
-// FIXED AD METHOD - Works on Netlify (not iframe-in-iframe)
-var key='5c7c31add62fa96e382309b28478f957';
-function inject(id){
-var w=document.getElementById(id);
-if(!w) return;
-w.innerHTML='<div id="ad-'+id+'"></div>';
-var s1=document.createElement('script');
-s1.text="atOptions={'key':'"+key+"','format':'iframe','height':50,'width':320,'params':{}};";
-var s2=document.createElement('script');
-s2.src='https://www.highperformanceformat.com/'+key+'/invoke.js';
-w.appendChild(s1);w.appendChild(s2);
-}
-inject('adTop');inject('adBottom');
-}
-
-function openSettings(){document.getElementById('nameInput').value=user;document.getElementById('settingsModal').classList.add('show');}
-function saveSettings(){var n=document.getElementById('nameInput').value.trim();if(n){user=n;localStorage.setItem('earnkart_username',n);document.getElementById('userName').innerText=n;showToast('✅ Saved!')}closeModal('settingsModal');}
-function closeModal(id){document.getElementById(id).classList.remove('show');}
-function openLeaderboard(){document.getElementById('leaderboardModal').classList.add('show');}
-function showToast(m){var t=document.getElementById('toast');t.innerText=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-
-window.addEventListener('message',function(e){
-if(e.data && e.data.type==='EARNKART_GAME_SCORE'){
-var s=parseInt(e.data.score)||0;
-if(e.data.game){
-var gid=games.find(g=>g.name===e.data.game)?.id;
-if(gid) gameScores[gid]=(gameScores[gid]||0)+s;
-}
-totalScore+=s;totalCoins+=s;
-localStorage.setItem('earnkart_total_score',totalScore);
-localStorage.setItem('earnkart_coins',totalCoins);
-localStorage.setItem('earnkart_game_scores',JSON.stringify(gameScores));
-document.getElementById('statScore').innerText=totalScore;
-document.getElementById('statCoins').innerText=totalCoins;
-render();showToast('💰 +'+s+' coins!');
-}
-});
-
-setTimeout(function(){
-document.getElementById('splash').style.display='none';
-document.getElementById('app').style.display='flex';
-init();
-},2000);
+setTimeout(()=>document.getElementById('splash').style.display='none',1500);
+let coins=parseInt(localStorage.getItem('ek_coins')||'0');document.getElementById('coinCount').innerText=coins;
+function addCoins(n){coins+=n;localStorage.setItem('ek_coins',coins);document.getElementById('coinCount').innerText=coins;}
+let currentGame=null,gameLoop=null;
+function openGame(name){currentGame=name;document.getElementById('gameModal').classList.add('active');document.getElementById('gameTitle').innerText=name;document.getElementById('gameArea').innerHTML='';if(name==='bubble')initBubble();if(name==='panda')initPanda();if(name==='word')initWord();if(name==='ball')initBall();if(name==='bus')initBus();if(name==='restaurant')initRestaurant();}
+function closeGame(){document.getElementById('gameModal').classList.remove('active');if(gameLoop)cancelAnimationFrame(gameLoop);if(currentGame)addCoins(10);alert('🎉 You earned 10 coins!');}
+function initBubble(){const area=document.getElementById('gameArea');const c=document.createElement('canvas');c.width=320;c.height=480;area.appendChild(c);const ctx=c.getContext('2d');let bubbles=[];let score=0;for(let i=0;i<20;i++)bubbles.push({x:Math.random()*300,y:Math.random()*400,r:15+Math.random()*15,c:`hsl(${Math.random()*360},80%,60%)`,vy:0.5+Math.random()*1.5});function draw(){ctx.clearRect(0,0,c.width,c.height);bubbles.forEach(b=>{ctx.beginPath();ctx.fillStyle=b.c;ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill();b.y-=b.vy;if(b.y<-20){b.y=500;b.x=Math.random()*300}});document.getElementById('scoreDisplay').innerText='Score: '+score;gameLoop=requestAnimationFrame(draw);}c.addEventListener('click',e=>{const rect=c.getBoundingClientRect();const mx=(e.clientX-rect.left)*(c.width/rect.width);const my=(e.clientY-rect.top)*(c.height/rect.height);bubbles.forEach((b,i)=>{if(Math.hypot(b.x-mx,b.y-my)<b.r){bubbles.splice(i,1);score+=10;bubbles.push({x:Math.random()*300,y:500,r:15+Math.random()*15,c:`hsl(${Math.random()*360},80%,60%)`,vy:0.5+Math.random()*1.5});}});});draw();}
+function initPanda(){const area=document.getElementById('gameArea');const c=document.createElement('canvas');c.width=360;c.height=400;area.appendChild(c);const ctx=c.getContext('2d');let panda={y:300,vy:0},obs=[],score=0,frame=0;function draw(){ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='#87ceeb';ctx.fillRect(0,0,360,400);ctx.fillStyle='#7ed957';ctx.fillRect(0,350,360,50);panda.vy+=0.6;panda.y+=panda.vy;if(panda.y>300){panda.y=300;panda.vy=0}ctx.font='30px Arial';ctx.fillText('🐼',50,panda.y);if(frame%90===0)obs.push({x:360,y:320,w:30,h:30});obs.forEach(o=>{o.x-=4;ctx.fillText('🌵',o.x,o.y);if(o.x<80&&o.x>30&&panda.y>270){score=0;obs=[];addCoins(5)}});obs=obs.filter(o=>o.x>-30);score++;document.getElementById('scoreDisplay').innerText='Score: '+score;frame++;gameLoop=requestAnimationFrame(draw);}area.addEventListener('click',()=>{if(panda.y>=300)panda.vy=-12});draw();}
+function initWord(){const words=['GAME','PLAY','EARN','COIN','BUBBLE','PANDA','BUS','SHOP'];let word=words[Math.floor(Math.random()*words.length)];let guessed=Array(word.length).fill('_');let score=0;const area=document.getElementById('gameArea');area.innerHTML=`<div style="background:white;padding:20px;border-radius:16px;text-align:center"><h2 id="wDisplay">${guessed.join(' ')}</h2><p>Guess: ${word.length} letters</p><div id="letters" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px"></div></div>`;const lettersDiv=document.getElementById('letters');'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l=>{const b=document.createElement('button');b.innerText=l;b.style.padding='8px 10px';b.style.borderRadius='6px';b.style.border='1px solid #ccc';b.onclick=()=>{b.disabled=true;if(word.includes(l)){word.split('').forEach((ch,i)=>{if(ch===l)guessed[i]=l});document.getElementById('wDisplay').innerText=guessed.join(' ');if(!guessed.includes('_')){score+=50;document.getElementById('scoreDisplay').innerText='Score: '+score;addCoins(20);setTimeout(()=>{word=words[Math.floor(Math.random()*words.length)];guessed=Array(word.length).fill('_');document.getElementById('wDisplay').innerText=guessed.join(' ');Array.from(lettersDiv.children).forEach(btn=>btn.disabled=false)},1000)}}};lettersDiv.appendChild(b);});}
+function initBall(){const area=document.getElementById('gameArea');const c=document.createElement('canvas');c.width=320;c.height=460;area.appendChild(c);const ctx=c.getContext('2d');let ball={x:160,y:100,vx:3,vy:3},paddle={x:110,w:100},score=0;function draw(){ctx.clearRect(0,0,c.width,c.height);ball.x+=ball.vx;ball.y+=ball.vy;if(ball.x<10||ball.x>310)ball.vx*=-1;if(ball.y<10)ball.vy*=-1;if(ball.y>430&&ball.x>paddle.x&&ball.x<paddle.x+paddle.w){ball.vy*=-1;score+=10}if(ball.y>460){score=0;ball.y=100}ctx.beginPath();ctx.arc(ball.x,ball.y,12,0,Math.PI*2);ctx.fillStyle='#ff3d57';ctx.fill();ctx.fillStyle='#333';ctx.fillRect(paddle.x,440,paddle.w,12);document.getElementById('scoreDisplay').innerText='Score: '+score;gameLoop=requestAnimationFrame(draw);}c.addEventListener('mousemove',e=>{const rect=c.getBoundingClientRect();paddle.x=(e.clientX-rect.left)*(c.width/rect.width)-50;});c.addEventListener('touchmove',e=>{const rect=c.getBoundingClientRect();paddle.x=(e.touches[0].clientX-rect.left)*(c.width/rect.width)-50;e.preventDefault();},{passive:false});draw();}
+function initBus(){const area=document.getElementById('gameArea');area.innerHTML=`<div style="background:white;padding:16px;border-radius:12px;width:90%"><h3 style="text-align:center">🚌 Bus Parking</h3><div id="busTrack" style="position:relative;height:200px;background:#ddd;border-radius:10px;margin-top:10px;overflow:hidden"><div id="bus" style="position:absolute;left:0;top:70px;font-size:36px">🚌</div><div style="position:absolute;right:20px;top:60px;width:60px;height:80px;border:3px dashed green;background:#c8ffc8"></div></div><p id="busMsg" style="text-align:center;margin-top:8px">Tap to Stop Bus in Green Zone!</p></div>`;let pos=0,dir=1,playing=true,raf;function move(){if(!playing)return;pos+=dir*3;if(pos>260||pos<0)dir*=-1;document.getElementById('bus').style.left=pos+'px';raf=requestAnimationFrame(move);}move();document.getElementById('busTrack').onclick=()=>{playing=false;cancelAnimationFrame(raf);const finalPos=pos;if(finalPos>200&&finalPos<260){document.getElementById('busMsg').innerText='✅ Perfect Parking! +20 Coins';addCoins(20);}else{document.getElementById('busMsg').innerText='❌ Missed! Try again - Close & Reopen';}};}
+function initRestaurant(){const area=document.getElementById('gameArea');let orders=0,score=0;area.innerHTML=`<div style="background:white;padding:16px;border-radius:12px;width:90%;text-align:center"><h3>🍔 Restaurant Rush</h3><p>Tap customers to serve!</p><div id="custArea" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"></div><p id="restMsg" style="margin-top:10px">Orders served: 0</p></div>`;function spawn(){if(orders>=10)return;const custArea=document.getElementById('custArea');const div=document.createElement('div');div.style.background='#fff3e0';div.style.padding='10px';div.style.borderRadius='8px';div.innerHTML='🧑‍🍳<br>Order: 🍔';div.onclick=()=>{score+=10;orders++;div.innerHTML='✅ Served';setTimeout(()=>div.remove(),500);document.getElementById('restMsg').innerText='Orders served: '+orders;document.getElementById('scoreDisplay').innerText='Score: '+score;if(orders>=6)addCoins(15);};custArea.appendChild(div);}for(let i=0;i<4;i++)spawn();setInterval(spawn,2000);}
 </script>
 </body>
 </html>
